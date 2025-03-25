@@ -44,15 +44,6 @@ public partial class @PlayerInputController: IInputActionCollection2, IDisposabl
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""ExitBuildMenu"",
-                    ""type"": ""Button"",
-                    ""id"": ""cda10f79-08cd-4d48-aa38-66ccb924a407"",
-                    ""expectedControlType"": """",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -99,17 +90,6 @@ public partial class @PlayerInputController: IInputActionCollection2, IDisposabl
                     ""action"": ""OnClickAction"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""84d0c940-3393-47f7-a6e6-8bc0649d8339"",
-                    ""path"": ""<Keyboard>/escape"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""ExitBuildMenu"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -120,7 +100,6 @@ public partial class @PlayerInputController: IInputActionCollection2, IDisposabl
         m_BuildMode = asset.FindActionMap("BuildMode", throwIfNotFound: true);
         m_BuildMode_SelectPos = m_BuildMode.FindAction("SelectPos", throwIfNotFound: true);
         m_BuildMode_OnClickAction = m_BuildMode.FindAction("OnClickAction", throwIfNotFound: true);
-        m_BuildMode_ExitBuildMenu = m_BuildMode.FindAction("ExitBuildMenu", throwIfNotFound: true);
     }
 
     ~@PlayerInputController()
@@ -189,14 +168,12 @@ public partial class @PlayerInputController: IInputActionCollection2, IDisposabl
     private List<IBuildModeActions> m_BuildModeActionsCallbackInterfaces = new List<IBuildModeActions>();
     private readonly InputAction m_BuildMode_SelectPos;
     private readonly InputAction m_BuildMode_OnClickAction;
-    private readonly InputAction m_BuildMode_ExitBuildMenu;
     public struct BuildModeActions
     {
         private @PlayerInputController m_Wrapper;
         public BuildModeActions(@PlayerInputController wrapper) { m_Wrapper = wrapper; }
         public InputAction @SelectPos => m_Wrapper.m_BuildMode_SelectPos;
         public InputAction @OnClickAction => m_Wrapper.m_BuildMode_OnClickAction;
-        public InputAction @ExitBuildMenu => m_Wrapper.m_BuildMode_ExitBuildMenu;
         public InputActionMap Get() { return m_Wrapper.m_BuildMode; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -212,9 +189,6 @@ public partial class @PlayerInputController: IInputActionCollection2, IDisposabl
             @OnClickAction.started += instance.OnOnClickAction;
             @OnClickAction.performed += instance.OnOnClickAction;
             @OnClickAction.canceled += instance.OnOnClickAction;
-            @ExitBuildMenu.started += instance.OnExitBuildMenu;
-            @ExitBuildMenu.performed += instance.OnExitBuildMenu;
-            @ExitBuildMenu.canceled += instance.OnExitBuildMenu;
         }
 
         private void UnregisterCallbacks(IBuildModeActions instance)
@@ -225,9 +199,6 @@ public partial class @PlayerInputController: IInputActionCollection2, IDisposabl
             @OnClickAction.started -= instance.OnOnClickAction;
             @OnClickAction.performed -= instance.OnOnClickAction;
             @OnClickAction.canceled -= instance.OnOnClickAction;
-            @ExitBuildMenu.started -= instance.OnExitBuildMenu;
-            @ExitBuildMenu.performed -= instance.OnExitBuildMenu;
-            @ExitBuildMenu.canceled -= instance.OnExitBuildMenu;
         }
 
         public void RemoveCallbacks(IBuildModeActions instance)
@@ -249,6 +220,5 @@ public partial class @PlayerInputController: IInputActionCollection2, IDisposabl
     {
         void OnSelectPos(InputAction.CallbackContext context);
         void OnOnClickAction(InputAction.CallbackContext context);
-        void OnExitBuildMenu(InputAction.CallbackContext context);
     }
 }

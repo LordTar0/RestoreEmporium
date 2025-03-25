@@ -22,15 +22,6 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
-                },
-                {
-                    "name": "ExitBuildMenu",
-                    "type": "Button",
-                    "id": "cda10f79-08cd-4d48-aa38-66ccb924a407",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -75,17 +66,6 @@
                     "processors": "",
                     "groups": "",
                     "action": "OnClickAction",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "84d0c940-3393-47f7-a6e6-8bc0649d8339",
-                    "path": "<Keyboard>/escape",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "ExitBuildMenu",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
