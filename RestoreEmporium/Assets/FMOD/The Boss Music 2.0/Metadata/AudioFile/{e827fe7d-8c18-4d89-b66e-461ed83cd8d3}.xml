@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="AudioFile" id="{e827fe7d-8c18-4d89-b66e-461ed83cd8d3}">
+		<property name="assetPath">
+			<value>The BossMusic 2.0.wav</value>
+		</property>
+		<property name="isStreaming">
+			<value>true</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>44.0999985</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>16.128208616780046</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{e4aaa6b2-586e-42ed-8248-43aa1698874d}</destination>
+		</relationship>
+	</object>
+</objects>
