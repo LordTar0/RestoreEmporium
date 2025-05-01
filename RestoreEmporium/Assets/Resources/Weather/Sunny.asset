@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c388fba8a8024b44980a1b5810d517b5, type: 3}
+  m_Name: Sunny
+  m_EditorClassIdentifier: 
+  ID: 0
+  Icon: {fileID: 524764072, guid: 8fcd88812435c9b47883f4743ecdaa2c, type: 3}
+  Name: Sunny
+  Description: A warm sunny day, clear weather with no issues!
+  NPCMultiplier: 1
+  ShippingMultipler: 1
+  weatherType: 1

@@ -1,17 +1,20 @@
 using System;
 using UnityEngine;
 using Unity.Collections;
-using System.Collections.Generic;
 
-[CreateAssetMenu]
+[CreateAssetMenu(menuName = "Restore Emporium/New Item")]
 public class ItemData : ScriptableObject
 {
-    public int ID;
+    public int ID = -1;
 
+    public Sprite Icon;
     public string Name;
-    public string Description;
+    [TextArea(0,10)] public string Description;
+    [Space(10)]
 
     public int Cost;
+
+    public AnimationCurve PotentialDiscounts;
 }
 
 [System.Serializable]
@@ -22,13 +25,29 @@ public class Item
     public string Name;
     public string Description;
     public int Cost;
+    public Sprite Icon;
 
     //Inventory Specific Data
     public int Damage;
     [ReadOnly] public string InventoryID = Guid.NewGuid().ToString();
 
-    private void Generate()
+    private void GenerateUniqueID()
     {
         InventoryID = Guid.NewGuid().ToString();
+    }
+
+    public void GetItemData(Database database, int ID)
+    {
+        ItemData data = database.GetItemData(ID);
+
+        if (!data) { Debug.LogError($"Could not find item with ID: {ID}. Please check the get item data reference from item data."); return; }
+
+        ItemID = ID;
+        Name = data.Name;
+        Description = data.Description;
+        Cost = data.Cost;
+        Icon = data.Icon;
+
+        GenerateUniqueID();
     }
 }
