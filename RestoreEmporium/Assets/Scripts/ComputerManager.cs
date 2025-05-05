@@ -6,12 +6,12 @@ using UnityEngine;
 public class ComputerManager : MonoBehaviour
 {
     public ComputerInventory inventory;
-    [SerializeField] private Canvas myScreen;
+    [SerializeField] private PCMonitorHandler myScreen;
     bool isOn;
 
     private void Awake()
     {
-        isOn = true;
+        isOn = false;
         TurnPCOn();
     }
 
