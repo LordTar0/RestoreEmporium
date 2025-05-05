@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="AudioFile" id="{d43ff0b5-73ae-4a7e-9972-c32ccf3a188a}">
+		<property name="assetPath">
+			<value>Hammer.mp3</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>24</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>9.4320000000000004</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{5705a1c4-5575-47f9-8826-214380fa65f2}</destination>
+		</relationship>
+	</object>
+</objects>

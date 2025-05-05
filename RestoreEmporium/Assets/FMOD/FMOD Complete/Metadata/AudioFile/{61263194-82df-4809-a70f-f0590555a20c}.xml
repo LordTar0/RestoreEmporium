@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="AudioFile" id="{61263194-82df-4809-a70f-f0590555a20c}">
+		<property name="assetPath">
+			<value>Kleptomaniac Music.wav</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>44.0999985</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>9.6999319727891162</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{5705a1c4-5575-47f9-8826-214380fa65f2}</destination>
+		</relationship>
+	</object>
+</objects>
