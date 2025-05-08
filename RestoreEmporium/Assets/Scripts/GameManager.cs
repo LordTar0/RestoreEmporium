@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
@@ -74,6 +76,29 @@ public class GameDetails
 {
     public int Day;
     public int currentWeather;
+}
+
+[System.Serializable]
+public class GameDetailsVisuals
+{
+    public TextMeshProUGUI DayCounter;
+    public TextMeshProUGUI Clock;
+    public Image WeatherIcon;
+
+    public void UpdateDayCounter(int day)
+    {
+        DayCounter.text = $"Day:{day}";
+    }
+
+    public void UpdateClock(int hour, int minutes)
+    {
+        Clock.text = $"{hour}:{minutes}";
+    }
+
+    public void UpdateWeather(Sprite icon)
+    {
+        WeatherIcon.sprite = icon;
+    }
 }
 
 [System.Serializable]

@@ -2,7 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 
+[RequireComponent(typeof(Interactor))]
 public class PlayerManager : MonoBehaviour
 {
     private InputSystem_Actions inputSystem;
@@ -11,53 +14,114 @@ public class PlayerManager : MonoBehaviour
     public Camera cam;
     public float lerpSpeed;
 
-    public Transform cam_desk, cam_computer, cam_workstation;
+    public InteractionPoints cam_desk, cam_computer, cam_workstation;
+
+    Interactor interactor;
+
+    DepthOfField depthFocus;
 
     Coroutine camLerp;
+    Vector3 lastPos;
 
     private void Start()
     {
         cam = GetComponentInChildren<Camera>();
         inputSystem = new();
         inputSystem.Enable();
+        interactor = GetComponent<Interactor>();
 
-        inputSystem.Player.Select.performed += WorldInput;
+        Volume volume = GetComponent<Volume>();
+        volume.profile.TryGet<DepthOfField>(out DepthOfField DOF);
+        if (DOF != null) depthFocus = DOF;
+        else { Debug.LogError($"Depth of field component could not be found. Please fix."); }
+
         FrontDeskSelect();
     }
 
     public void WorldInput(InputAction.CallbackContext context)
     {
-        Vector2 ScreenPos = inputSystem.Player.ScreenPosition.ReadValue<Vector2>();
+        Vector2 ScreenPos = inputSystem.FrontDesk.ScreenPosition.ReadValue<Vector2>();
+        
+        IInteractable interactable = interactor.GetColliders(GetSelectedPosition(ScreenPos));
+
+        if (interactable == null) { return; }
+
+        switch (interactable)
+        {
+            case ComputerManager: ComputerSelect(); Debug.Log("turn on pc");
+                break;
+
+            default : FrontDeskSelect(); Debug.Log("going to desk");
+                break;
+        }
+    }
+
+    public void EndInteractionInput()
+    {
+        interactor.EndInteraction();
+        FrontDeskSelect();
     }
 
     public void FrontDeskSelect()
     {
-        MoveCamera(cam_desk.position, cam_desk.rotation, 60);
+        EnableFrontDeskInput(true);
+        MoveCamera(cam_desk.Anchor.position, cam_desk.Anchor.rotation, cam_desk.Zoom, cam_desk.FocusDepth, cam_desk.FocusLength);
     }
 
     public void ComputerSelect()
     {
-        MoveCamera(cam_computer.position, cam_computer.rotation, 30);
+        EnableFrontDeskInput(false);
+        MoveCamera(cam_computer.Anchor.position, cam_computer.Anchor.rotation, cam_computer.Zoom, cam_computer.FocusDepth, cam_computer.FocusLength);
     }
 
     public void WorkStation()
     {
-        MoveCamera(cam_workstation.position, cam_workstation.rotation, 30);
+        EnableFrontDeskInput(false);
+        MoveCamera(cam_workstation.Anchor.position, cam_workstation.Anchor.rotation, cam_workstation.Zoom, cam_workstation.FocusDepth, cam_workstation.FocusLength);
     }
 
-    public void MoveCamera(Vector3 newLocation, Quaternion rotation ,float zoom)
+    public void MoveCamera(Vector3 newLocation, Quaternion rotation ,float zoom, float focusdistance, int focusLength)
     {
         if (camLerp != null) {StopCoroutine(camLerp);}
-        camLerp = StartCoroutine(MoveCamLerp(newLocation, rotation, zoom));
+        camLerp = StartCoroutine(MoveCamLerp(newLocation, rotation, zoom, focusdistance, focusLength));
     }
 
-    private IEnumerator MoveCamLerp(Vector3 newLocation, Quaternion rotation, float zoom)
+    public Vector3 GetSelectedPosition(Vector2 input)
     {
-        while (cam.transform.position != newLocation || cam.fieldOfView != zoom)
+        Vector3 selectPos = new Vector3(input.x, input.y, cam.nearClipPlane);
+
+        Ray ray = cam.ScreenPointToRay(selectPos);
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit, 100))
+        {
+            lastPos = hit.point;
+        }
+
+        return lastPos;
+    }
+
+    void EnableFrontDeskInput(bool activate)
+    {
+        if (activate)
+        {
+            inputSystem.FrontDesk.Select.performed += WorldInput;
+
+        }
+        else
+        {
+            inputSystem.FrontDesk.Select.performed -= WorldInput;
+        }
+    }
+
+    private IEnumerator MoveCamLerp(Vector3 newLocation, Quaternion rotation, float zoom, float focusdistance, int focusLength)
+    {
+        while (cam.transform.position != newLocation || cam.fieldOfView != zoom || depthFocus.focusDistance.value != focusdistance)
         {
             cam.transform.position = Vector3.Lerp(cam.transform.position, newLocation, lerpSpeed * Time.deltaTime);
             cam.transform.rotation = Quaternion.Lerp(cam.transform.rotation, rotation, lerpSpeed * Time.deltaTime);
             cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, zoom, lerpSpeed * Time.deltaTime);
+            depthFocus.focusDistance.value = Mathf.Lerp(depthFocus.focusDistance.value, focusdistance, lerpSpeed * 2 * Time.deltaTime);
+            depthFocus.focalLength.value = Mathf.Lerp(depthFocus.focalLength.value, focusLength, lerpSpeed * 2 * Time.deltaTime);
 
             yield return null;
         }
@@ -70,4 +134,13 @@ public class PlayerInventory
     public int Funds;
     public int InventorySize;
     public List<InventorySlot> Slots = new();
+}
+
+[System.Serializable]
+public class InteractionPoints
+{
+    public Transform Anchor;
+    public float Zoom = 60f;
+    public float FocusDepth = 10f;
+    public int FocusLength = 1;
 }

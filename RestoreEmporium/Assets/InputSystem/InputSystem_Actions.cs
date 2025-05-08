@@ -24,7 +24,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
     ""name"": ""InputSystem_Actions"",
     ""maps"": [
         {
-            ""name"": ""Player"",
+            ""name"": ""FrontDesk"",
             ""id"": ""df70fa95-8a34-4494-b137-73ab6b9c7d37"",
             ""actions"": [
                 {
@@ -701,10 +701,10 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         }
     ]
 }");
-        // Player
-        m_Player = asset.FindActionMap("Player", throwIfNotFound: true);
-        m_Player_ScreenPosition = m_Player.FindAction("ScreenPosition", throwIfNotFound: true);
-        m_Player_Select = m_Player.FindAction("Select", throwIfNotFound: true);
+        // FrontDesk
+        m_FrontDesk = asset.FindActionMap("FrontDesk", throwIfNotFound: true);
+        m_FrontDesk_ScreenPosition = m_FrontDesk.FindAction("ScreenPosition", throwIfNotFound: true);
+        m_FrontDesk_Select = m_FrontDesk.FindAction("Select", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -724,7 +724,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
 
     ~@InputSystem_Actions()
     {
-        UnityEngine.Debug.Assert(!m_Player.enabled, "This will cause a leak and performance issues, InputSystem_Actions.Player.Disable() has not been called.");
+        UnityEngine.Debug.Assert(!m_FrontDesk.enabled, "This will cause a leak and performance issues, InputSystem_Actions.FrontDesk.Disable() has not been called.");
         UnityEngine.Debug.Assert(!m_UI.enabled, "This will cause a leak and performance issues, InputSystem_Actions.UI.Disable() has not been called.");
         UnityEngine.Debug.Assert(!m_RepairStation.enabled, "This will cause a leak and performance issues, InputSystem_Actions.RepairStation.Disable() has not been called.");
     }
@@ -785,26 +785,26 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         return asset.FindBinding(bindingMask, out action);
     }
 
-    // Player
-    private readonly InputActionMap m_Player;
-    private List<IPlayerActions> m_PlayerActionsCallbackInterfaces = new List<IPlayerActions>();
-    private readonly InputAction m_Player_ScreenPosition;
-    private readonly InputAction m_Player_Select;
-    public struct PlayerActions
+    // FrontDesk
+    private readonly InputActionMap m_FrontDesk;
+    private List<IFrontDeskActions> m_FrontDeskActionsCallbackInterfaces = new List<IFrontDeskActions>();
+    private readonly InputAction m_FrontDesk_ScreenPosition;
+    private readonly InputAction m_FrontDesk_Select;
+    public struct FrontDeskActions
     {
         private @InputSystem_Actions m_Wrapper;
-        public PlayerActions(@InputSystem_Actions wrapper) { m_Wrapper = wrapper; }
-        public InputAction @ScreenPosition => m_Wrapper.m_Player_ScreenPosition;
-        public InputAction @Select => m_Wrapper.m_Player_Select;
-        public InputActionMap Get() { return m_Wrapper.m_Player; }
+        public FrontDeskActions(@InputSystem_Actions wrapper) { m_Wrapper = wrapper; }
+        public InputAction @ScreenPosition => m_Wrapper.m_FrontDesk_ScreenPosition;
+        public InputAction @Select => m_Wrapper.m_FrontDesk_Select;
+        public InputActionMap Get() { return m_Wrapper.m_FrontDesk; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
         public bool enabled => Get().enabled;
-        public static implicit operator InputActionMap(PlayerActions set) { return set.Get(); }
-        public void AddCallbacks(IPlayerActions instance)
+        public static implicit operator InputActionMap(FrontDeskActions set) { return set.Get(); }
+        public void AddCallbacks(IFrontDeskActions instance)
         {
-            if (instance == null || m_Wrapper.m_PlayerActionsCallbackInterfaces.Contains(instance)) return;
-            m_Wrapper.m_PlayerActionsCallbackInterfaces.Add(instance);
+            if (instance == null || m_Wrapper.m_FrontDeskActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_FrontDeskActionsCallbackInterfaces.Add(instance);
             @ScreenPosition.started += instance.OnScreenPosition;
             @ScreenPosition.performed += instance.OnScreenPosition;
             @ScreenPosition.canceled += instance.OnScreenPosition;
@@ -813,7 +813,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @Select.canceled += instance.OnSelect;
         }
 
-        private void UnregisterCallbacks(IPlayerActions instance)
+        private void UnregisterCallbacks(IFrontDeskActions instance)
         {
             @ScreenPosition.started -= instance.OnScreenPosition;
             @ScreenPosition.performed -= instance.OnScreenPosition;
@@ -823,21 +823,21 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @Select.canceled -= instance.OnSelect;
         }
 
-        public void RemoveCallbacks(IPlayerActions instance)
+        public void RemoveCallbacks(IFrontDeskActions instance)
         {
-            if (m_Wrapper.m_PlayerActionsCallbackInterfaces.Remove(instance))
+            if (m_Wrapper.m_FrontDeskActionsCallbackInterfaces.Remove(instance))
                 UnregisterCallbacks(instance);
         }
 
-        public void SetCallbacks(IPlayerActions instance)
+        public void SetCallbacks(IFrontDeskActions instance)
         {
-            foreach (var item in m_Wrapper.m_PlayerActionsCallbackInterfaces)
+            foreach (var item in m_Wrapper.m_FrontDeskActionsCallbackInterfaces)
                 UnregisterCallbacks(item);
-            m_Wrapper.m_PlayerActionsCallbackInterfaces.Clear();
+            m_Wrapper.m_FrontDeskActionsCallbackInterfaces.Clear();
             AddCallbacks(instance);
         }
     }
-    public PlayerActions @Player => new PlayerActions(this);
+    public FrontDeskActions @FrontDesk => new FrontDeskActions(this);
 
     // UI
     private readonly InputActionMap m_UI;
@@ -1047,7 +1047,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             return asset.controlSchemes[m_XRSchemeIndex];
         }
     }
-    public interface IPlayerActions
+    public interface IFrontDeskActions
     {
         void OnScreenPosition(InputAction.CallbackContext context);
         void OnSelect(InputAction.CallbackContext context);

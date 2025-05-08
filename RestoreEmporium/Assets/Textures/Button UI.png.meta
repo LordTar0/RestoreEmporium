@@ -1144,7 +1144,7 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -1152,6 +1152,48 @@ TextureImporter:
       bones: []
       spriteID: 773989ae7c29f24428893e36e890f820
       internalID: 133506632
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PowerButton_In
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 112
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 57516a9a6df43be4d984c7d7f40e9ee2
+      internalID: 163524961
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PowerButton_Normal
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 96
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3bcbd3ecb425a6a4cb586ed2a4d4b2c7
+      internalID: 495368474
       vertices: []
       indices: 
       edges: []
@@ -1191,6 +1233,8 @@ TextureImporter:
       Large_Bar_Normal: 956029433
       Pause_In: 133506632
       Pause_Normal: -197429714
+      PowerButton_In: 163524961
+      PowerButton_Normal: 495368474
       Shade_Bottom: 1359314756
       Shade_Circle_InOut: 109052452
       Shade_Circle_OutIn: -1218414346

@@ -2,8 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Events;
 
-public class ComputerManager : MonoBehaviour
+public class ComputerManager : MonoBehaviour, IInteractable
 {
     public ComputerInventory inventory;
     [SerializeField] private PCMonitorHandler myScreen;
@@ -11,7 +12,20 @@ public class ComputerManager : MonoBehaviour
 
     private void Awake()
     {
-        isOn = false;
+        isOn = true;
+        TurnPCOn();
+    }
+
+    public void Interact(Interactor interactor, out bool isSuccessful)
+    {
+        TurnPCOn();
+
+        if (isOn) { isSuccessful = true; }
+        else { isSuccessful = false; }
+    }
+
+    public void EndInteraction()
+    {
         TurnPCOn();
     }
 
