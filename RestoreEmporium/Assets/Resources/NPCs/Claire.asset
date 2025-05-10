@@ -23,3 +23,10 @@ MonoBehaviour:
     HappyFace: {fileID: 21300000, guid: 7c3d54bbc2489e04a921e339d27018d0, type: 3}
     AngryFace: {fileID: 21300000, guid: 1fbaeda717e119c48be714b6d443d860, type: 3}
     SadFace: {fileID: 21300000, guid: 208b621bdc4dd6d49873f6384aeb1e93, type: 3}
+    NPCtalkSound:
+      Guid:
+        Data1: -110361659
+        Data2: 1204700997
+        Data3: -430735944
+        Data4: 249587268
+      Path: event:/NPCTalking

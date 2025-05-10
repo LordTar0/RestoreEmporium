@@ -18,6 +18,7 @@ public class GameManager : MonoBehaviour
     PlayerManager playerManager;
     ComputerManager computerManager;
     OpenSignManager openSignManager;
+    NPCManager npcManager;
 
     [SerializeField] private TextMeshProUGUI transitionDayText;
     [SerializeField] private TextMeshProUGUI weatherText;
@@ -39,6 +40,7 @@ public class GameManager : MonoBehaviour
         playerManager = FindAnyObjectByType<PlayerManager>();
         computerManager = FindAnyObjectByType<ComputerManager>();
         openSignManager = FindAnyObjectByType<OpenSignManager>();
+        npcManager = FindAnyObjectByType<NPCManager>();
     }
 
     //Makes sure there's only one of this object
@@ -63,8 +65,17 @@ public class GameManager : MonoBehaviour
     public void StartNewDay()
     {
         gameDetails.Day++;
+        gameDetails.weekDayCount++;
+
+        if (gameDetails.weekDayCount >= 8)
+        {
+            gameDetails.weekDayCount = 0;
+            gameDetails.weekCount++;
+            WeeklySummary();
+        }
 
         ShopStatusChange();
+        openSignManager.EnableSignChange(true);
 
         gameDetails.Hour = 8;
         gameDetails.Minute = 0;
@@ -76,6 +87,21 @@ public class GameManager : MonoBehaviour
 
         transitionDayText.text = $"Day : {gameDetails.Day}";
         gameDetailVisuals.UpdateEverything(gameDetails.Day, gameDetails.Hour, gameDetails.Minute, gameDetails.Weather.Icon, playerManager.inventory.Funds, gameDetails.IsShopOpen);
+    }
+
+    public void CloseUpShop()
+    {
+        npcManager.Leave();
+    }
+
+    public void EndDay()
+    {
+
+    }
+
+    public void WeeklySummary()
+    {
+
     }
 
     public void PlayMusic(EventReference musicRef)
@@ -135,6 +161,13 @@ public class GameManager : MonoBehaviour
         while (!isGamePaused)
         {
             gameDetails.Minute++;
+            gameDetails.NPCCounter++;
+
+            if (gameDetails.NPCCounter >= 15)
+            {
+                gameDetails.NPCCounter = 0;
+                SpawnNPC();
+            }
 
             if (gameDetails.Minute >= 60)
             {
@@ -164,6 +197,12 @@ public class GameManager : MonoBehaviour
                 Debug.Log($"Player did close shop manually on day: {gameDetails.Day}. Game did it automatically.");
             }
 
+            if (gameDetails.Hour == 23 && !gameDetails.IsShopOpen)
+            {
+                EndDay();
+                Debug.Log($"Player did not go home manually on day: {gameDetails.Day}. Game did it automatically.");
+            }
+
             gameDetailVisuals.UpdateClock(gameDetails.Hour, gameDetails.Minute);
 
             yield return new WaitForSeconds(1);
@@ -183,16 +222,32 @@ public class GameManager : MonoBehaviour
 
         Debug.Log($"Today it is {gameDetails.Weather.NameAndDescription.Name}");
     }
+
+    public void SpawnNPC()
+    {
+        if (!SpawnRoll() || gameDetails.NPCAtDesk || !gameDetails.IsShopOpen) { return; }
+
+        npcManager.Spawn();
+    }
+
+    public bool SpawnRoll()
+    {
+        return true;
+    }
 }
 
 [System.Serializable]
 public class GameDetails
 {
     public int Day;
+    public int weekDayCount = 0;
+    public int weekCount = 0;
     public Weather Weather = new();
     public int Hour;
     public int Minute;
     public bool IsShopOpen;
+    public bool NPCAtDesk;
+    public int NPCCounter;
 }
 
 [System.Serializable]

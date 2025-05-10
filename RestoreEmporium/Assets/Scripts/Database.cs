@@ -169,6 +169,11 @@ public class Database : ScriptableObject
         Debug.LogError($"Could not find NPC ID: {ID}. Check Database or request ticket");
         return null;
     }
+
+    public int GetNPCRange()
+    {
+        return NPCs.Count;
+    }
 }
 
 [System.Serializable]
