@@ -6352,6 +6352,7 @@ GameObject:
   - component: {fileID: 8137889645888906997}
   - component: {fileID: 6534302135304235023}
   - component: {fileID: 676120176212439083}
+  - component: {fileID: 8608680576091095454}
   m_Layer: 5
   m_Name: PC monitor Screen
   m_TagString: Untagged
@@ -6419,9 +6420,11 @@ MonoBehaviour:
     ButtonText: {fileID: 2284624438743838157}
   myCanvas: {fileID: 8137889645888906997}
   gameDetailVisuals:
+    Money: {fileID: 0}
     DayCounter: {fileID: 1109594042103382534}
     Clock: {fileID: 3774562368044705276}
     WeatherIcon: {fileID: 7379597847925336329}
+    ShopOpenStatus: {fileID: 0}
   Window: {fileID: 4707073023159218485}
 --- !u!223 &8137889645888906997
 Canvas:
@@ -6486,6 +6489,27 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!95 &8608680576091095454
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6192585365563237348}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 492c38068ef8cc44e90279f020925bf7, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &6416731595672989714
 GameObject:
   m_ObjectHideFlags: 0
