@@ -8,6 +8,8 @@ using UnityEngine.Rendering.Universal;
 [RequireComponent(typeof(Interactor))]
 public class PlayerManager : MonoBehaviour
 {
+    public PlayerManager _instance { get; private set; }
+
     private InputSystem_Actions inputSystem;
 
     public PlayerInventory inventory = new();
@@ -23,8 +25,23 @@ public class PlayerManager : MonoBehaviour
     Coroutine camLerp;
     Vector3 lastPos;
 
+    //Makes sure there's only one of this object
+    private void Singleton()
+    {
+        if (_instance != null && _instance != this)
+        {
+            Destroy(this.gameObject);
+            return;
+        }
+        else
+        {
+            _instance = this;
+        }
+    }
+
     private void Start()
     {
+        Singleton();
         cam = GetComponentInChildren<Camera>();
         inputSystem = new();
         inputSystem.Enable();
@@ -41,8 +58,10 @@ public class PlayerManager : MonoBehaviour
     public void WorldInput(InputAction.CallbackContext context)
     {
         Vector2 ScreenPos = inputSystem.FrontDesk.ScreenPosition.ReadValue<Vector2>();
-        
-        IInteractable interactable = interactor.GetColliders(GetSelectedPosition(ScreenPos));
+
+        IInteractable interactable;
+
+        interactable = interactor.GetInteractable(GetSelectedPosition(ScreenPos));
 
         if (interactable == null) { return; }
 
@@ -51,12 +70,18 @@ public class PlayerManager : MonoBehaviour
             case ComputerManager: ComputerSelect(); Debug.Log("turn on pc");
                 break;
 
+            case NPCManager: Debug.Log("Talking to NPC");
+                break;
+
+            case OpenSignManager: Debug.Log("Switching Sign");
+                break;
+
             default : FrontDeskSelect(); Debug.Log("going to desk");
                 break;
         }
     }
 
-    public void EndInteractionInput()
+    public void EndInteractionInput(InputAction.CallbackContext context)
     {
         interactor.EndInteraction();
         FrontDeskSelect();
@@ -95,9 +120,10 @@ public class PlayerManager : MonoBehaviour
         if (Physics.Raycast(ray, out hit, 100))
         {
             lastPos = hit.point;
+            return lastPos;
         }
 
-        return lastPos;
+        return Vector3.zero;
     }
 
     void EnableFrontDeskInput(bool activate)
@@ -105,11 +131,12 @@ public class PlayerManager : MonoBehaviour
         if (activate)
         {
             inputSystem.FrontDesk.Select.performed += WorldInput;
-
+            inputSystem.ExitInteraction.Exit.performed -= EndInteractionInput;
         }
         else
         {
             inputSystem.FrontDesk.Select.performed -= WorldInput;
+            inputSystem.ExitInteraction.Exit.performed += EndInteractionInput;
         }
     }
 

@@ -3,22 +3,56 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using FMODUnity;
+using FMOD.Studio;
+using Unity.VisualScripting;
 
 public class GameManager : MonoBehaviour
 {
+    public static GameManager _instance { get; private set; }
+
     public Database Database;
 
     public List<ItemData> ItemsUnlocked; 
 
     PlayerManager playerManager;
     ComputerManager computerManager;
+    OpenSignManager openSignManager;
 
-    GameDetails gameDetails = new();
+    [SerializeField] private TextMeshProUGUI transitionDayText;
+    [SerializeField] private TextMeshProUGUI weatherText;
+
+    public GameDetails gameDetails { get; private set; } = new();
+    public GameDetailsVisuals gameDetailVisuals;
+
+    public bool isGamePaused;
+
+    public EventReference ShopClosedMusic;
+    public EventReference ShopOpenMusic;
+
+    EventInstance currentTrack;
 
     private void Awake()
     {
+        Singleton();
+        gameDetails.Weather = new();
         playerManager = FindAnyObjectByType<PlayerManager>();
         computerManager = FindAnyObjectByType<ComputerManager>();
+        openSignManager = FindAnyObjectByType<OpenSignManager>();
+    }
+
+    //Makes sure there's only one of this object
+    private void Singleton()
+    {
+        if (_instance != null && _instance != this)
+        {
+            Destroy(this.gameObject);
+            return;
+        }
+        else
+        {
+            _instance = this;
+        }
     }
 
     private void Start()
@@ -30,60 +64,154 @@ public class GameManager : MonoBehaviour
     {
         gameDetails.Day++;
 
+        ShopStatusChange();
+
+        gameDetails.Hour = 8;
+        gameDetails.Minute = 0;
+
+        time = StartCoroutine(Time());
+
         NewShopInventory();
         WeatherUpdate();
+
+        transitionDayText.text = $"Day : {gameDetails.Day}";
+        gameDetailVisuals.UpdateEverything(gameDetails.Day, gameDetails.Hour, gameDetails.Minute, gameDetails.Weather.Icon, playerManager.inventory.Funds, gameDetails.IsShopOpen);
+    }
+
+    public void PlayMusic(EventReference musicRef)
+    {
+        if (!currentTrack.IsUnityNull())
+        {
+            currentTrack.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
+            currentTrack.release();
+        }
+
+        currentTrack = AudioManager._instance.CreateEventInstance(musicRef);
+        currentTrack.start();
+    }
+
+    public void ShopStatusChange()
+    {
+        if (gameDetails.IsShopOpen) 
+        {
+            PlayMusic(ShopOpenMusic);
+        }
+        else 
+        {
+            PlayMusic(ShopClosedMusic);
+        }
+    }
+
+    public void PauseGame()
+    {
+        if (isGamePaused)
+        {
+
+        }
+        else
+        {
+
+        }
+
+        PauseTime(isGamePaused);
+    }
+
+    Coroutine time;
+
+    public void PauseTime(bool Pause)
+    {
+        if (Pause)
+        {
+            StopCoroutine(time);
+        }
+        else
+        {
+            time = StartCoroutine(Time());
+        }
+    }
+
+    private IEnumerator Time()
+    {
+        while (!isGamePaused)
+        {
+            gameDetails.Minute++;
+
+            if (gameDetails.Minute >= 60)
+            {
+                gameDetails.Minute = 0;
+                gameDetails.Hour++;
+            }
+
+            if (gameDetails.Hour >= 24)
+            {
+                gameDetails.Hour = 0;
+            }
+
+            if (gameDetails.Hour == 10 && !gameDetails.IsShopOpen)
+            {
+                openSignManager.ChangeSign();
+                Debug.Log($"Player did not open shop manually on day: {gameDetails.Day}. Game did it automatically.");
+            }
+
+            if (gameDetails.IsShopOpen && gameDetails.Hour >= 18)
+            {
+                openSignManager.EnableSignChange(true);
+            }
+
+            if (gameDetails.Hour == 20 && gameDetails.IsShopOpen)
+            {
+                openSignManager.ChangeSign();
+                Debug.Log($"Player did close shop manually on day: {gameDetails.Day}. Game did it automatically.");
+            }
+
+            gameDetailVisuals.UpdateClock(gameDetails.Hour, gameDetails.Minute);
+
+            yield return new WaitForSeconds(1);
+        }
     }
 
     private void NewShopInventory()
     {
-        int maxSlotCount = computerManager.inventory.SlotCount;
-
-        for (int i = 0; i < maxSlotCount; i++)
-        {
-            ComputerInvSlot slot;
-
-            if (computerManager.inventory.inventorySlots.Count < maxSlotCount) { computerManager.inventory.inventorySlots.Add(new()); Debug.Log($"Adding new slot to slot {i} as it did not contain any data"); }
-
-            slot = computerManager.inventory.inventorySlots[i];
-
-            if (!slot.IsSold) { slot.GenerateDiscount(Database); Debug.Log($"Slot: {i} has not been sold, recalculating for a discount on item"); continue; }
-
-            computerManager.AddItemToMarket(slot, GenerateItem(), 0); //Generates and adds an item to the market //add damage system later!
-            slot.IsSold = false; //Tells the slot its now for sale
-        }
     }
 
     private void WeatherUpdate()
     {
+        int randomWeather = Random.Range(0, Database.GetWeatherRange());
+        gameDetails.Weather.GetWeatherData(Database,randomWeather);
+        weatherText.text = $"{gameDetails.Weather.NameAndDescription.Name}";
+        gameDetailVisuals.UpdateWeather(gameDetails.Weather.Icon);
 
-    }
-
-    private Item GenerateItem()
-    {
-        int itemChosen = Random.Range(0, ItemsUnlocked.Count);
-
-        ItemData data = ItemsUnlocked[itemChosen];
-
-        Item item = new Item();
-
-        item.GetItemData(Database, data.ID);
-
-        return item;
+        Debug.Log($"Today it is {gameDetails.Weather.NameAndDescription.Name}");
     }
 }
 
+[System.Serializable]
 public class GameDetails
 {
     public int Day;
-    public int currentWeather;
+    public Weather Weather = new();
+    public int Hour;
+    public int Minute;
+    public bool IsShopOpen;
 }
 
 [System.Serializable]
 public class GameDetailsVisuals
 {
+    public TextMeshProUGUI Money;
     public TextMeshProUGUI DayCounter;
     public TextMeshProUGUI Clock;
     public Image WeatherIcon;
+    public TextMeshProUGUI ShopOpenStatus;
+
+    public void UpdateEverything(int day, int hour, int minutes, Sprite w_icon, int money, bool isShopOpen)
+    {
+        UpdateDayCounter(day);
+        UpdateClock(hour, minutes);
+        UpdateWeather(w_icon);
+        UpdateMoney(money);
+        UpdateShopOpenStatus(isShopOpen);
+    }
 
     public void UpdateDayCounter(int day)
     {
@@ -92,17 +220,27 @@ public class GameDetailsVisuals
 
     public void UpdateClock(int hour, int minutes)
     {
-        Clock.text = $"{hour}:{minutes}";
+        Clock.text = string.Format("{00:00}:{01:00}",hour,minutes);
     }
 
     public void UpdateWeather(Sprite icon)
     {
         WeatherIcon.sprite = icon;
     }
-}
 
-[System.Serializable]
-public class InventorySlot
-{
-    public Item Item;
+    public void UpdateMoney(int money)
+    {
+        string negativeValue;
+
+        if (money > 0) { Money.color = Color.white; negativeValue = null; }
+        else { Money.color = Color.red; negativeValue = "-"; }
+
+        Money.text = $"£{negativeValue}{money}";
+    }
+
+    public void UpdateShopOpenStatus(bool isOpen)
+    {
+        if (isOpen) { ShopOpenStatus.text = "Open"; ShopOpenStatus.color = Color.green; }
+        else { ShopOpenStatus.text = "Closed"; ShopOpenStatus.color = Color.red; }
+    }
 }

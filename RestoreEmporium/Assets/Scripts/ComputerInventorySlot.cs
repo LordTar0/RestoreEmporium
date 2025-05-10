@@ -22,7 +22,7 @@ public class ComputerInventorySlot : UIInventorySlot
         discountBar.UpdateQuantity(slot.PercentageOff);
 
         //Debugs the data display
-        Debug.Log($"UpdatedSlotData on slot: {slotIndex}.SlotItem: {item.Name}. ID: {item.ItemID}. InventoryID: {item.InventoryID}"); 
+        Debug.Log($"UpdatedSlotData on slot: {slotIndex}.SlotItem: {item.NameAndDescription.Name}. ID: {item.ItemID}. InventoryID: {item.InventoryID}"); 
     }
 
     public void IsSold(bool isSold)

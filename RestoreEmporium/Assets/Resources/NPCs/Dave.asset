@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8feae595dd93cf4ca913490bfaba2d3, type: 3}
+  m_Name: Dave
+  m_EditorClassIdentifier: 
+  ID: -1
+  data:
+    NameAndDescription:
+      Name: Dave
+      Description: DAVE!
+    Icon: {fileID: 21300000, guid: b18c5389a74870d47922d897f8d1ef7c, type: 3}
+    Base: {fileID: 21300000, guid: b18c5389a74870d47922d897f8d1ef7c, type: 3}
+    BlankFace: {fileID: 21300000, guid: a56d8a52558df024796ae9f0a8fb48ab, type: 3}
+    HappyFace: {fileID: 21300000, guid: 1512cdd4267e5ed429d630b47ba36cd1, type: 3}
+    AngryFace: {fileID: 21300000, guid: d855453d096a7e24e835c4a09f6cbb02, type: 3}
+    SadFace: {fileID: 21300000, guid: 44b0ed3460351274e8ddc38796f8d5a6, type: 3}

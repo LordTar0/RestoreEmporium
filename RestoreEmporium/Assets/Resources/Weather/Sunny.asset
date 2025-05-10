@@ -13,9 +13,11 @@ MonoBehaviour:
   m_Name: Sunny
   m_EditorClassIdentifier: 
   ID: 0
-  Icon: {fileID: 524764072, guid: 8fcd88812435c9b47883f4743ecdaa2c, type: 3}
-  Name: Sunny
-  Description: A warm sunny day, clear weather with no issues!
-  NPCMultiplier: 1
-  ShippingMultipler: 1
-  weatherType: 1
+  data:
+    Icon: {fileID: 524764072, guid: 8fcd88812435c9b47883f4743ecdaa2c, type: 3}
+    NameAndDescription:
+      Name: Sunny
+      Description: Bright and clear out today lads!
+    NPCMultiplier: 1
+    ShippingMultipler: 1
+    weatherType: 0

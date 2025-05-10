@@ -14,8 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ID: 0
   Icon: {fileID: -1216317661, guid: 98c0f745c60318146b13316756e703b2, type: 3}
-  Name: A Human
-  Description: You Should Not Have This.
+  NameAndDescription:
+    Name: Test Item 1
+    Description: You Shouldnt Have this.
   Cost: 100
   PotentialDiscounts:
     serializedVersion: 2

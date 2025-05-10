@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UIElements;
 
 public class Interactor : MonoBehaviour
 {
@@ -6,7 +7,10 @@ public class Interactor : MonoBehaviour
     public float interactionRadias = 1f;
     public bool isInteracting {  get; private set; }
 
-    public IInteractable GetColliders(Vector3 position)
+    IInteractable currentInteractable;
+    Vector3 lastPos = Vector3.zero;
+
+    public IInteractable GetInteractable(Vector3 position)
     {
         var colliders = Physics.OverlapSphere(position, interactionRadias, interactionLayer);
 
@@ -14,9 +18,12 @@ public class Interactor : MonoBehaviour
         {
             var interactable = colliders[i].GetComponent<IInteractable>();
 
-            if (interactable != null) { StartInteraction(interactable); return interactable; }
+            lastPos = position;
+
+            if (interactable != null) { StartInteraction(interactable); currentInteractable = interactable; return interactable; }
         }
 
+        currentInteractable = null;
         return null;
     }
 
@@ -28,6 +35,13 @@ public class Interactor : MonoBehaviour
 
     public void EndInteraction()
     {
+        currentInteractable.EndInteraction();
+        currentInteractable = null;
         isInteracting = false;
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.DrawWireSphere(lastPos, interactionRadias);
     }
 }

@@ -636,6 +636,73 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""Dialogue"",
+            ""id"": ""19b5edd8-97e7-4032-8737-7b8437175935"",
+            ""actions"": [
+                {
+                    ""name"": ""Next Dialogue"",
+                    ""type"": ""Button"",
+                    ""id"": ""5e87f89d-898a-4841-aa78-d54fcd185901"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""022e1a2e-21a1-44ce-a3d7-8eed8670c2b9"",
+                    ""path"": ""<Keyboard>/anyKey"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard&Mouse"",
+                    ""action"": ""Next Dialogue"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1c79b19a-2b3e-4ab7-aedd-369645753239"",
+                    ""path"": ""<Touchscreen>/Press"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Touch"",
+                    ""action"": ""Next Dialogue"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
+        },
+        {
+            ""name"": ""Exit Interaction"",
+            ""id"": ""d247b883-2094-48ea-aa71-cb8867db4255"",
+            ""actions"": [
+                {
+                    ""name"": ""Exit"",
+                    ""type"": ""Button"",
+                    ""id"": ""7a87336b-a300-4018-a261-20a3e3384966"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""420843e6-6ded-47c4-8d83-ea098c685022"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard&Mouse"",
+                    ""action"": ""Exit"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": [
@@ -720,6 +787,12 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         // RepairStation
         m_RepairStation = asset.FindActionMap("RepairStation", throwIfNotFound: true);
         m_RepairStation_Newaction = m_RepairStation.FindAction("New action", throwIfNotFound: true);
+        // Dialogue
+        m_Dialogue = asset.FindActionMap("Dialogue", throwIfNotFound: true);
+        m_Dialogue_NextDialogue = m_Dialogue.FindAction("Next Dialogue", throwIfNotFound: true);
+        // Exit Interaction
+        m_ExitInteraction = asset.FindActionMap("Exit Interaction", throwIfNotFound: true);
+        m_ExitInteraction_Exit = m_ExitInteraction.FindAction("Exit", throwIfNotFound: true);
     }
 
     ~@InputSystem_Actions()
@@ -727,6 +800,8 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         UnityEngine.Debug.Assert(!m_FrontDesk.enabled, "This will cause a leak and performance issues, InputSystem_Actions.FrontDesk.Disable() has not been called.");
         UnityEngine.Debug.Assert(!m_UI.enabled, "This will cause a leak and performance issues, InputSystem_Actions.UI.Disable() has not been called.");
         UnityEngine.Debug.Assert(!m_RepairStation.enabled, "This will cause a leak and performance issues, InputSystem_Actions.RepairStation.Disable() has not been called.");
+        UnityEngine.Debug.Assert(!m_Dialogue.enabled, "This will cause a leak and performance issues, InputSystem_Actions.Dialogue.Disable() has not been called.");
+        UnityEngine.Debug.Assert(!m_ExitInteraction.enabled, "This will cause a leak and performance issues, InputSystem_Actions.ExitInteraction.Disable() has not been called.");
     }
 
     public void Dispose()
@@ -1002,6 +1077,98 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         }
     }
     public RepairStationActions @RepairStation => new RepairStationActions(this);
+
+    // Dialogue
+    private readonly InputActionMap m_Dialogue;
+    private List<IDialogueActions> m_DialogueActionsCallbackInterfaces = new List<IDialogueActions>();
+    private readonly InputAction m_Dialogue_NextDialogue;
+    public struct DialogueActions
+    {
+        private @InputSystem_Actions m_Wrapper;
+        public DialogueActions(@InputSystem_Actions wrapper) { m_Wrapper = wrapper; }
+        public InputAction @NextDialogue => m_Wrapper.m_Dialogue_NextDialogue;
+        public InputActionMap Get() { return m_Wrapper.m_Dialogue; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(DialogueActions set) { return set.Get(); }
+        public void AddCallbacks(IDialogueActions instance)
+        {
+            if (instance == null || m_Wrapper.m_DialogueActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_DialogueActionsCallbackInterfaces.Add(instance);
+            @NextDialogue.started += instance.OnNextDialogue;
+            @NextDialogue.performed += instance.OnNextDialogue;
+            @NextDialogue.canceled += instance.OnNextDialogue;
+        }
+
+        private void UnregisterCallbacks(IDialogueActions instance)
+        {
+            @NextDialogue.started -= instance.OnNextDialogue;
+            @NextDialogue.performed -= instance.OnNextDialogue;
+            @NextDialogue.canceled -= instance.OnNextDialogue;
+        }
+
+        public void RemoveCallbacks(IDialogueActions instance)
+        {
+            if (m_Wrapper.m_DialogueActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        public void SetCallbacks(IDialogueActions instance)
+        {
+            foreach (var item in m_Wrapper.m_DialogueActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_DialogueActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    public DialogueActions @Dialogue => new DialogueActions(this);
+
+    // Exit Interaction
+    private readonly InputActionMap m_ExitInteraction;
+    private List<IExitInteractionActions> m_ExitInteractionActionsCallbackInterfaces = new List<IExitInteractionActions>();
+    private readonly InputAction m_ExitInteraction_Exit;
+    public struct ExitInteractionActions
+    {
+        private @InputSystem_Actions m_Wrapper;
+        public ExitInteractionActions(@InputSystem_Actions wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Exit => m_Wrapper.m_ExitInteraction_Exit;
+        public InputActionMap Get() { return m_Wrapper.m_ExitInteraction; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(ExitInteractionActions set) { return set.Get(); }
+        public void AddCallbacks(IExitInteractionActions instance)
+        {
+            if (instance == null || m_Wrapper.m_ExitInteractionActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_ExitInteractionActionsCallbackInterfaces.Add(instance);
+            @Exit.started += instance.OnExit;
+            @Exit.performed += instance.OnExit;
+            @Exit.canceled += instance.OnExit;
+        }
+
+        private void UnregisterCallbacks(IExitInteractionActions instance)
+        {
+            @Exit.started -= instance.OnExit;
+            @Exit.performed -= instance.OnExit;
+            @Exit.canceled -= instance.OnExit;
+        }
+
+        public void RemoveCallbacks(IExitInteractionActions instance)
+        {
+            if (m_Wrapper.m_ExitInteractionActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        public void SetCallbacks(IExitInteractionActions instance)
+        {
+            foreach (var item in m_Wrapper.m_ExitInteractionActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_ExitInteractionActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    public ExitInteractionActions @ExitInteraction => new ExitInteractionActions(this);
     private int m_KeyboardMouseSchemeIndex = -1;
     public InputControlScheme KeyboardMouseScheme
     {
@@ -1068,5 +1235,13 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
     public interface IRepairStationActions
     {
         void OnNewaction(InputAction.CallbackContext context);
+    }
+    public interface IDialogueActions
+    {
+        void OnNextDialogue(InputAction.CallbackContext context);
+    }
+    public interface IExitInteractionActions
+    {
+        void OnExit(InputAction.CallbackContext context);
     }
 }

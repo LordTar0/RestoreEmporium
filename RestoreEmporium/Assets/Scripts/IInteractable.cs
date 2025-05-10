@@ -7,5 +7,4 @@ public interface IInteractable
 {
     public void Interact(Interactor interactor, out bool isSuccessful);
     public void EndInteraction();
-
 }

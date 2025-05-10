@@ -5,7 +5,7 @@
 			<value>Main menu music</value>
 		</property>
 		<property name="outputFormat">
-			<value>2</value>
+			<value>1</value>
 		</property>
 		<relationship name="folder">
 			<destination>{bdda1e29-2676-4834-9ce1-09d07fa9ee93}</destination>
@@ -53,7 +53,7 @@
 			<destination>{8b7fe4ab-3194-481d-b644-82c93fa02739}</destination>
 		</relationship>
 		<relationship name="output">
-			<destination>{d50210b9-f29f-401a-8109-6e5c96ed08d6}</destination>
+			<destination>{08b5e575-1c8f-45c7-9e08-9a153a773f1f}</destination>
 		</relationship>
 	</object>
 	<object class="EventAutomatableProperties" id="{653a0cf0-b646-4b3c-8cd6-656907f67d20}" />
@@ -69,6 +69,9 @@
 	<object class="Timeline" id="{0c1862cf-eb4e-4e4a-b97b-e46afd7952dd}">
 		<relationship name="modules">
 			<destination>{66935784-6847-424a-aa4e-995e35940521}</destination>
+		</relationship>
+		<relationship name="markers">
+			<destination>{b8d4073e-3ea3-431a-b456-d7a1fc28ddb5}</destination>
 		</relationship>
 	</object>
 	<object class="EventMixerMaster" id="{567f588e-bb16-4506-8eba-e3f1a2d0ac1b}">
@@ -113,10 +116,23 @@
 			<destination>{567f588e-bb16-4506-8eba-e3f1a2d0ac1b}</destination>
 		</relationship>
 	</object>
+	<object class="LoopRegion" id="{b8d4073e-3ea3-431a-b456-d7a1fc28ddb5}">
+		<property name="position">
+			<value>0</value>
+		</property>
+		<property name="length">
+			<value>12</value>
+		</property>
+		<relationship name="timeline">
+			<destination>{0c1862cf-eb4e-4e4a-b97b-e46afd7952dd}</destination>
+		</relationship>
+		<relationship name="markerTrack">
+			<destination>{cd27b554-7a16-4aa1-99a9-51db3fa78e9f}</destination>
+		</relationship>
+	</object>
 	<object class="MixerBusEffectChain" id="{6ba7fd33-d560-425d-a9de-95e31930fe06}">
 		<relationship name="effects">
 			<destination>{cf59e5ec-24da-44c0-967b-53e6edce670f}</destination>
-			<destination>{e27090e8-ec62-430a-8f4d-548d1ca666c2}</destination>
 		</relationship>
 	</object>
 	<object class="MixerBusPanner" id="{604effe0-be48-4ba6-98cb-4b8a4f65ded6}" />
@@ -128,6 +144,5 @@
 	</object>
 	<object class="MixerBusPanner" id="{a582c49c-8667-44ba-aaad-f012d493be02}" />
 	<object class="MixerBusFader" id="{cf59e5ec-24da-44c0-967b-53e6edce670f}" />
-	<object class="SpatialiserEffect" id="{e27090e8-ec62-430a-8f4d-548d1ca666c2}" />
 	<object class="MixerBusFader" id="{818d93c5-4b68-4faf-b8bf-671c978131d8}" />
 </objects>

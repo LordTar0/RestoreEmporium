@@ -614,6 +614,73 @@
                     "isPartOfComposite": false
                 }
             ]
+        },
+        {
+            "name": "Dialogue",
+            "id": "19b5edd8-97e7-4032-8737-7b8437175935",
+            "actions": [
+                {
+                    "name": "Next Dialogue",
+                    "type": "Button",
+                    "id": "5e87f89d-898a-4841-aa78-d54fcd185901",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "022e1a2e-21a1-44ce-a3d7-8eed8670c2b9",
+                    "path": "<Keyboard>/anyKey",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "Next Dialogue",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "1c79b19a-2b3e-4ab7-aedd-369645753239",
+                    "path": "<Touchscreen>/Press",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Touch",
+                    "action": "Next Dialogue",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "Exit Interaction",
+            "id": "d247b883-2094-48ea-aa71-cb8867db4255",
+            "actions": [
+                {
+                    "name": "Exit",
+                    "type": "Button",
+                    "id": "7a87336b-a300-4018-a261-20a3e3384966",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "420843e6-6ded-47c4-8d83-ea098c685022",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "Exit",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
         }
     ],
     "controlSchemes": [

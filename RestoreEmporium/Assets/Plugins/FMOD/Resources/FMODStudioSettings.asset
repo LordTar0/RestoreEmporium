@@ -380,8 +380,8 @@ MonoBehaviour:
   switchSettingsMigration: 1
   HasSourceProject: 1
   HasPlatforms: 1
-  sourceProjectPath: Assets/FMOD/RestoreEmporium/RestoreEmporium.fspro
-  sourceBankPath: Assets/FMOD/RestoreEmporium/Build
+  sourceProjectPath: Assets/FMOD/FMOD Complete/FMOD Complete.fspro
+  sourceBankPath: Assets/FMOD/FMOD Complete/Build
   sourceBankPathUnformatted: 
   BankRefreshCooldown: 5
   ShowBankRefreshWindow: 1
@@ -404,7 +404,9 @@ MonoBehaviour:
   Plugins: []
   MasterBanks:
   - Master
-  Banks: []
+  Banks:
+  - Music
+  - Sound Effects
   BanksToLoad: []
   LiveUpdatePort: 9264
   EnableMemoryTracking: 0

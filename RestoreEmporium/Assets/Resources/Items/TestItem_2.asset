@@ -14,8 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ID: 1
   Icon: {fileID: -1621600509, guid: 98c0f745c60318146b13316756e703b2, type: 3}
-  Name: Game Controller
-  Description: You Really Shouldnt Have this.
+  NameAndDescription:
+    Name: Test Item 2
+    Description: You could have this, but really you shouldnt have this item.
   Cost: 300
   PotentialDiscounts:
     serializedVersion: 2

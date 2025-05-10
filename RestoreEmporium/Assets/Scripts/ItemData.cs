@@ -8,8 +8,7 @@ public class ItemData : ScriptableObject
     public int ID = -1;
 
     public Sprite Icon;
-    public string Name;
-    [TextArea(0,10)] public string Description;
+    public NameAndDescription NameAndDescription;
     [Space(10)]
 
     public int Cost;
@@ -22,8 +21,7 @@ public class Item
 {
     //Item Data
     public int ItemID;
-    public string Name;
-    public string Description;
+    public NameAndDescription NameAndDescription = new();
     public int Cost;
     public Sprite Icon;
 
@@ -43,11 +41,17 @@ public class Item
         if (!data) { Debug.LogError($"Could not find item with ID: {ID}. Please check the get item data reference from item data."); return; }
 
         ItemID = ID;
-        Name = data.Name;
-        Description = data.Description;
+        NameAndDescription.Name = data.NameAndDescription.Name;
+        NameAndDescription.Description = data.NameAndDescription.Description;
         Cost = data.Cost;
         Icon = data.Icon;
 
         GenerateUniqueID();
     }
+}
+
+[System.Serializable]
+public class InventorySlot
+{
+    public Item Item;
 }

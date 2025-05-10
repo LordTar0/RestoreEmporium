@@ -32,9 +32,7 @@ public class ComputerManager : MonoBehaviour, IInteractable
     public void AddItemToMarket(ComputerInvSlot slot, Item item, int damage_amount)
     {
         if (slot == null|| item == null || damage_amount < 0)
-        { Debug.LogError($"Failed to add item. Item: {item.Name}, Damage amount: {damage_amount}"); return; }
-
-        slot.Slot.Item = item;
+        { Debug.LogError($"Failed to add item. Item: {item.NameAndDescription.Name}, Damage amount: {damage_amount}"); return; }
     }
 
     public void RemoveItemFromMarket(ComputerInvSlot slot)

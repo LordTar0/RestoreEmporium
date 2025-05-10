@@ -13,10 +13,11 @@ MonoBehaviour:
   m_Name: Rain
   m_EditorClassIdentifier: 
   ID: 1
-  Icon: {fileID: 1385694184, guid: 8fcd88812435c9b47883f4743ecdaa2c, type: 3}
-  Name: Raining
-  Description: The wet weather attracts less customers and causes delay, make sure
-    you're prepared.
-  NPCMultiplier: 0.5
-  ShippingMultipler: 0.5
-  weatherType: 2
+  data:
+    Icon: {fileID: 1385694184, guid: 8fcd88812435c9b47883f4743ecdaa2c, type: 3}
+    NameAndDescription:
+      Name: Rain
+      Description: It's going to rain!
+    NPCMultiplier: 0.2
+    ShippingMultipler: 0.1
+    weatherType: 2

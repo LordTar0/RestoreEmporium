@@ -19,3 +19,8 @@ MonoBehaviour:
   Weather:
   - {fileID: 11400000, guid: 1a02aaffe95b49f4681c641de8506f25, type: 2}
   - {fileID: 11400000, guid: 65cc900d7b380524baa2eed8f017b2b9, type: 2}
+  NPCs:
+  - {fileID: 11400000, guid: b4c4478551560464085b3afa2c46611a, type: 2}
+  - {fileID: 11400000, guid: a694b19528ae15a4cb3af8bcabd7d928, type: 2}
+  - {fileID: 11400000, guid: 91b4cb7586eb25a48bf1279143171983, type: 2}
+  - {fileID: 11400000, guid: 867bf91cee239fb45ad987f5cc47a7c0, type: 2}
