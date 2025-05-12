@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 
 
@@ -25,7 +26,7 @@ public class NPCManager : MonoBehaviour, IInteractable
     {
         myCollider = GetComponent<BoxCollider>();
         myAnimator = GetComponent<Animator>();
-
+        storedData = new();
         baseSprite.sprite = null;
         faceSprite.sprite = null;
         DialogueSystem.IsTalking(false);
@@ -36,19 +37,31 @@ public class NPCManager : MonoBehaviour, IInteractable
     public void LoadNPC(NPCData data)
     {
         storedData = data;
+        baseSprite.sprite = storedData.Base;
+        faceSprite.sprite = storedData.HappyFace;
+        DialogueSystem.UpdateIconBox(storedData.Icon);
     }
 
     public void Spawn()
     {
+        int chosenOne = Random.Range(0, GameManager._instance.Database.GetNPCRange());
+
+        NPCData chosenNPCData = GameManager._instance.Database.GetNPCData(chosenOne).data;
+
+        LoadNPC(chosenNPCData);
+
+        GameManager._instance.gameDetails.NPCAtDesk = true;
+
         myCollider.enabled = true;
         myAnimator.SetBool("IsAtDesk", true);
 
-        StartCoroutine(AnnoyedTimer(15));
+        StartCoroutine(AnnoyedTimer(35));
     }
 
     public void Leave()
     {
-        myCollider.enabled = true;
+        GameManager._instance.gameDetails.NPCAtDesk = false;
+        myCollider.enabled = false;
         myAnimator.SetBool("IsAtDesk", false);
     }
 
@@ -58,16 +71,32 @@ public class NPCManager : MonoBehaviour, IInteractable
 
         int timer = time;
 
+        bool halfAnnoyed = false;
+        bool reallyAnnoyed = false;
+
         while (timer > 0)
         {
-            if (timer <= time / 2 && faceSprite.sprite != storedData.AngryFace)
+            if (timer <= time / 2 && faceSprite.sprite != storedData.BlankFace && !halfAnnoyed)
             {
+                halfAnnoyed = true;
+                faceSprite.sprite = storedData.BlankFace;
+                DialogueSystem.UpdateText("Hello? Could I have some assistance please?", 5, storedData.NPCtalkSound, this.gameObject);
+            }
+
+            if (timer <= time / 4 && faceSprite.sprite != storedData.AngryFace && !reallyAnnoyed)
+            {
+                reallyAnnoyed = true;
                 faceSprite.sprite = storedData.AngryFace;
+                DialogueSystem.UpdateText("I'm growing tired of waiting?...", 5, storedData.NPCtalkSound, this.gameObject);
             }
 
             timer--;
             yield return new WaitForSeconds(1);
         }
+
+        DialogueSystem.UpdateText("Forget this, I'm out of here.",5, storedData.NPCtalkSound, this.gameObject);
+
+        yield return new WaitForSeconds(5);
 
         Leave();
     }

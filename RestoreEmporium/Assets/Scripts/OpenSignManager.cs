@@ -9,11 +9,15 @@ public class OpenSignManager : MonoBehaviour, IInteractable
     Collider myCollider;
     Material opencloseMat;
 
-    private void Start()
+    private void Awake()
     {
         myAnimator = GetComponent<Animator>();
         myCollider = GetComponent<Collider>();
-        isOpen = true;
+    }
+
+    private void Start()
+    {
+        isOpen = false;
 
         MeshRenderer meshrender = GetComponentInChildren<MeshRenderer>();
 
@@ -21,7 +25,7 @@ public class OpenSignManager : MonoBehaviour, IInteractable
 
         opencloseMat = materials[1];
 
-        ChangeSign();
+        UpdateSignVisuals();
     }
 
     public void ChangeSign()
@@ -30,9 +34,16 @@ public class OpenSignManager : MonoBehaviour, IInteractable
 
         GameManager._instance.gameDetails.IsShopOpen = isOpen;
         GameManager._instance.gameDetailVisuals.UpdateShopOpenStatus(isOpen);
+        GameManager._instance.ShopStatusChange();
 
-        if (isOpen) { EnableSignChange(false); GameManager._instance.ShopStatusChange(); }
+        if (isOpen) { EnableSignChange(false);}
+        else {GameManager._instance.CloseUpShop(); EnableSignChange(false); }
 
+        UpdateSignVisuals();
+    }
+
+    public void UpdateSignVisuals()
+    {
         myAnimator.ResetTrigger("MoveSign");
         myAnimator.SetTrigger("MoveSign");
 
@@ -43,6 +54,7 @@ public class OpenSignManager : MonoBehaviour, IInteractable
     public void EnableSignChange(bool enable)
     {
         myCollider.enabled = enable;
+
     }
 
     public void EndInteraction()

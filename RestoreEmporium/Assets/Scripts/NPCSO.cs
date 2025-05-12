@@ -1,3 +1,4 @@
+using FMODUnity;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -21,4 +22,6 @@ public class NPCData
     public Sprite HappyFace;
     public Sprite AngryFace;
     public Sprite SadFace;
+
+    public EventReference NPCtalkSound;
 }

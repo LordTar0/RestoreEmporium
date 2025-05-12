@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:RestoreEmporium/Assets/Scripts/CleanManager.cs.meta
 guid: faf0c09adc2850a4c89fbd89292facf7
+========
+guid: 5282eb266dd032a4594e475b43bd2279
+>>>>>>>> e67977c8675ff9b57a8c7475f352aa1cd715ad9f:RestoreEmporium/Assets/Scripts/DragDrop.cs.meta
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
