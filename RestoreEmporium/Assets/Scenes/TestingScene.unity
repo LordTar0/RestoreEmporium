@@ -1547,7 +1547,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &501702372
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4531,6 +4531,8 @@ MonoBehaviour:
   dialogueTextBox: {fileID: 687329412}
   IconBox: {fileID: 1518360180}
   myAnimator: {fileID: 1536684500}
+  nextPrompt: {fileID: 0}
+  choicesBox: {fileID: 0}
 --- !u!1001 &1547785621
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4896,6 +4898,9 @@ MonoBehaviour:
   myCollider: {fileID: 1809453523}
   myAnimator: {fileID: 0}
   isTalking: 0
+  firstStageAnnoyed: []
+  secondStageAnnoyed: []
+  leavingAnnoyed: []
 --- !u!95 &1809453525
 Animator:
   serializedVersion: 5
