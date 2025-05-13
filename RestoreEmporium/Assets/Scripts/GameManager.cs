@@ -59,6 +59,7 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        playerManager.inventory.Funds = 300;
         StartNewDay();
     }
 
@@ -232,7 +233,17 @@ public class GameManager : MonoBehaviour
 
     public bool SpawnRoll()
     {
-        return true;
+        float chance = gameDetails.Weather.NPCMultiplier * 1;
+
+        float roll = Random.Range(0, 1);
+
+        if (roll <= chance) { return true; }
+        else { return false; }
+    }
+
+    public void GameOver()
+    {
+
     }
 }
 

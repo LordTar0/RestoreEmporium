@@ -148,6 +148,11 @@ public class Database : ScriptableObject
         return null;
     }
 
+    public int GetItemRange()
+    {
+        return Items.Count;
+    }
+
     public WeatherSO GetWeatherData(int ID)
     {
         WeatherSO weather_Requested = Weather.Find(i => i.ID == ID);

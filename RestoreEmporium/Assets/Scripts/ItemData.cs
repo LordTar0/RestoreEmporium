@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using Unity.Collections;
 
@@ -14,6 +15,7 @@ public class ItemData : ScriptableObject
     public int Cost;
 
     public AnimationCurve PotentialDiscounts;
+    public AnimationCurve DamagePotential;
 }
 
 [System.Serializable]
@@ -47,6 +49,24 @@ public class Item
         Icon = data.Icon;
 
         GenerateUniqueID();
+    }
+
+    public void CopyData(int iD, string name, string description, int cost, Sprite icon, int damage, string invID)
+    {
+        ItemID = iD;
+        NameAndDescription.Name = name;
+        NameAndDescription.Description = description;
+        Cost = cost;
+        Icon = icon;
+        Damage = damage;
+        InventoryID = invID;
+    }
+
+    public int DamageObject(ItemData data)
+    {
+        float randomDamage = UnityEngine.Random.Range(0, 100);
+        int damage = Mathf.RoundToInt(data.DamagePotential.Evaluate(randomDamage/100)*100);
+        return damage;
     }
 }
 

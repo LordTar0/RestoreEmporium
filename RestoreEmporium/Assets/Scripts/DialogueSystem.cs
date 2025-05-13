@@ -11,6 +11,8 @@ public class DialogueSystem : MonoBehaviour
     [SerializeField] private TextMeshProUGUI dialogueTextBox;
     [SerializeField] private Image IconBox;
     [SerializeField] private Animator myAnimator;
+    [SerializeField] private GameObject nextPrompt;
+    [SerializeField] private GameObject choicesBox;
 
     Coroutine speechCoroutine;
 
@@ -21,15 +23,20 @@ public class DialogueSystem : MonoBehaviour
         myAnimator.SetBool("isTalking", istalking);
     }
 
-    public void UpdateText(string Text, float TalkingSpeed, EventReference speechSound, GameObject owner)
+    public void UpdateConversation()
+    {
+
+    }
+
+    public void UpdateText(string Text, float TalkingSpeed, EventReference speechSound, GameObject owner, SpeechType speechType)
     {
         dialogueTextBox.text = string.Empty;
 
         if  (speechCoroutine != null) {StopCoroutine(speechCoroutine);}
-        speechCoroutine = StartCoroutine(Speech(Text, TalkingSpeed, speechSound, owner));
+        speechCoroutine = StartCoroutine(Speech(Text, TalkingSpeed, speechSound, owner,speechType));
     }
 
-    private IEnumerator Speech(string Text, float TalkSpeed, EventReference speechSound, GameObject owner)
+    private IEnumerator Speech(string Text, float TalkSpeed, EventReference speechSound, GameObject owner,SpeechType speechType)
     {
         IsTalking(true);
 
@@ -53,13 +60,30 @@ public class DialogueSystem : MonoBehaviour
 
         currentTalkSound.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
 
+        switch (speechType)
+        {
+            case SpeechType.Choice: choicesBox.SetActive(true); while (choicesBox.activeInHierarchy) { yield return null; } break;
+            default: break;
+        }
+
         yield return new WaitForSeconds(3);
 
         IsTalking(false);
+    }
+
+    public void ChoiceMade()
+    {
+        choicesBox.SetActive(false);
     }
 
     public void UpdateIconBox(Sprite Icon)
     {
         IconBox.sprite = Icon;
     }
+}
+
+public enum SpeechType
+{
+    Default,
+    Choice,
 }

@@ -15,7 +15,16 @@ public class NPCManager : MonoBehaviour, IInteractable
 
     [SerializeField] private bool isTalking;
 
+    [SerializeField] private string[] firstStageAnnoyed;
+    [SerializeField] private string[] secondStageAnnoyed;
+    [SerializeField] private string[] leavingAnnoyed;
+
     NPCData storedData;
+
+    Coroutine annoyedTimer;
+
+    Item iteminMind = new();
+    bool isFromPlayer;
 
     private void Start()
     {
@@ -32,6 +41,7 @@ public class NPCManager : MonoBehaviour, IInteractable
         DialogueSystem.IsTalking(false);
         myCollider.enabled = false;
         myAnimator.SetBool("IsAtDesk",false);
+        iteminMind = new();
     }
 
     public void LoadNPC(NPCData data)
@@ -40,6 +50,19 @@ public class NPCManager : MonoBehaviour, IInteractable
         baseSprite.sprite = storedData.Base;
         faceSprite.sprite = storedData.HappyFace;
         DialogueSystem.UpdateIconBox(storedData.Icon);
+
+
+        if (PlayerManager._instance.inventory.Slots.Count > 0 && Random.Range(0, 100) >= 50)
+        {
+            int ItemToBuy = Random.Range(0, PlayerManager._instance.inventory.Slots.Count - 1);
+            iteminMind.GetItemData(GameManager._instance.Database, ItemToBuy);
+            isFromPlayer = true;
+        }
+        else 
+        {
+            int Item = Random.Range(0, GameManager._instance.Database.GetItemRange());
+            iteminMind.GetItemData(GameManager._instance.Database, Item);
+        }
     }
 
     public void Spawn()
@@ -55,7 +78,7 @@ public class NPCManager : MonoBehaviour, IInteractable
         myCollider.enabled = true;
         myAnimator.SetBool("IsAtDesk", true);
 
-        StartCoroutine(AnnoyedTimer(35));
+        annoyedTimer = StartCoroutine(AnnoyedTimer(35));
     }
 
     public void Leave()
@@ -73,6 +96,7 @@ public class NPCManager : MonoBehaviour, IInteractable
 
         bool halfAnnoyed = false;
         bool reallyAnnoyed = false;
+        int choice;
 
         while (timer > 0)
         {
@@ -80,21 +104,24 @@ public class NPCManager : MonoBehaviour, IInteractable
             {
                 halfAnnoyed = true;
                 faceSprite.sprite = storedData.BlankFace;
-                DialogueSystem.UpdateText("Hello? Could I have some assistance please?", 5, storedData.NPCtalkSound, this.gameObject);
+                choice = Random.Range(0, firstStageAnnoyed.Length);
+                DialogueSystem.UpdateText(firstStageAnnoyed[choice], 5, storedData.NPCtalkSound, this.gameObject, SpeechType.Default);
             }
 
             if (timer <= time / 4 && faceSprite.sprite != storedData.AngryFace && !reallyAnnoyed)
             {
                 reallyAnnoyed = true;
                 faceSprite.sprite = storedData.AngryFace;
-                DialogueSystem.UpdateText("I'm growing tired of waiting?...", 5, storedData.NPCtalkSound, this.gameObject);
+                choice = Random.Range(0, secondStageAnnoyed.Length);
+                DialogueSystem.UpdateText(secondStageAnnoyed[choice], 5, storedData.NPCtalkSound, this.gameObject, SpeechType.Default);
             }
 
             timer--;
             yield return new WaitForSeconds(1);
         }
 
-        DialogueSystem.UpdateText("Forget this, I'm out of here.",5, storedData.NPCtalkSound, this.gameObject);
+        choice = Random.Range(0, leavingAnnoyed.Length);
+        DialogueSystem.UpdateText(leavingAnnoyed[choice], 5, storedData.NPCtalkSound, this.gameObject, SpeechType.Default);
 
         yield return new WaitForSeconds(5);
 
@@ -103,11 +130,46 @@ public class NPCManager : MonoBehaviour, IInteractable
 
     public void Interact(Interactor interactor, out bool isSuccessful)
     {
-        throw new System.NotImplementedException();
+        StopCoroutine(annoyedTimer);
+
+        string dialogue;
+
+        if (isFromPlayer)
+        {
+            dialogue = $"I would like to purchase {iteminMind.NameAndDescription.Name} from you.";
+        }
+        else
+        {
+            dialogue = $"Would you be able to repair my {iteminMind.NameAndDescription.Name}?";
+        }
+
+        DialogueSystem.UpdateText(dialogue, 5, storedData.NPCtalkSound, this.gameObject, SpeechType.Choice);
+
+        isSuccessful = true;
+    }
+
+    public void OptionYes()
+    {
+        //AddRepair part!
+        DialogueSystem.UpdateText("Yay! thank you.", 5, storedData.NPCtalkSound, this.gameObject, SpeechType.Default);
+
+        //delete me!
+        EndInteraction();
+
+        PlayerManager._instance.FrontDeskSelect();
+    }
+
+    public void OptionNo()
+    {
+        DialogueSystem.UpdateText("oh... ok then...", 5, storedData.NPCtalkSound, this.gameObject, SpeechType.Default);
+
+        EndInteraction();
+
+        PlayerManager._instance.FrontDeskSelect();
     }
 
     public void EndInteraction()
     {
-
+        Leave();
     }
 }
