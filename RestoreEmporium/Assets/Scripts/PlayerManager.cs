@@ -8,7 +8,7 @@ using UnityEngine.Rendering.Universal;
 [RequireComponent(typeof(Interactor))]
 public class PlayerManager : MonoBehaviour
 {
-    public PlayerManager _instance { get; private set; }
+    public static PlayerManager _instance { get; private set; }
 
     private InputSystem_Actions inputSystem;
 
@@ -71,7 +71,7 @@ public class PlayerManager : MonoBehaviour
             case ComputerManager: ComputerSelect(); Debug.Log("turn on pc");
                 break;
 
-            case NPCManager: Debug.Log("Talking to NPC");
+            case NPCManager: NPCSelect(); Debug.Log("Talking to NPC");
                 break;
 
             case OpenSignManager: Debug.Log("Switching Sign");
@@ -91,6 +91,12 @@ public class PlayerManager : MonoBehaviour
     public void FrontDeskSelect()
     {
         EnableFrontDeskInput(true);
+        MoveCamera(cam_desk.Anchor.position, cam_desk.Anchor.rotation, cam_desk.Zoom, cam_desk.FocusDepth, cam_desk.FocusLength);
+    }
+
+    public void NPCSelect()
+    {
+        EnableFrontDeskInput(false);
         MoveCamera(cam_desk.Anchor.position, cam_desk.Anchor.rotation, cam_desk.Zoom, cam_desk.FocusDepth, cam_desk.FocusLength);
     }
 
@@ -152,6 +158,16 @@ public class PlayerManager : MonoBehaviour
             depthFocus.focalLength.value = Mathf.Lerp(depthFocus.focalLength.value, focusLength, lerpSpeed * 2 * Time.deltaTime);
 
             yield return null;
+        }
+    }
+
+    public void UpdateFunds(int amount)
+    {
+        inventory.Funds += amount;
+
+        if (amount <= 0) 
+        {
+            GameManager._instance.GameOver();
         }
     }
 }

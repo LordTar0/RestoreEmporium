@@ -33,6 +33,8 @@ public class ComputerManager : MonoBehaviour, IInteractable
     {
         if (slot == null|| item == null || damage_amount < 0)
         { Debug.LogError($"Failed to add item. Item: {item.NameAndDescription.Name}, Damage amount: {damage_amount}"); return; }
+
+        slot.Slot.Item.CopyData(item.ItemID, item.NameAndDescription.Name, item.NameAndDescription.Description, item.Cost, item.Icon, item.Damage, item.InventoryID);
     }
 
     public void RemoveItemFromMarket(ComputerInvSlot slot)
