@@ -17,6 +17,7 @@ public class PlayerManager : MonoBehaviour
     public float lerpSpeed;
 
     public InteractionPoints cam_desk, cam_computer, cam_workstation;
+    public GameObject toolbar;
 
     Interactor interactor;
 
@@ -171,3 +172,4 @@ public class InteractionPoints
     public float FocusDepth = 10f;
     public int FocusLength = 1;
 }
+
