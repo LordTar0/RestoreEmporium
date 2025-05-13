@@ -1,69 +1,82 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class DragDrop : MonoBehaviour 
+public class DragDrop : MonoBehaviour
 {
-	[SerializeField] private InputAction press, screenPos;
+    [SerializeField] private InputAction clickAction;
+    [SerializeField] private InputAction pointerPosition;
+    [SerializeField] private string requiredTag = "Draggable";
 
-	private Vector3 curScreenPos;
+    private Transform selectedObject;
+    private float distance;
 
-	Camera camera;
-	private bool isDragging;
+    private void OnEnable()
+    {
+        clickAction.Enable();
+        pointerPosition.Enable();
 
-	private Vector3 WorldPos
-	{
-		get
-		{
-			float z = camera.WorldToScreenPoint(transform.position).z;
-			return camera.ScreenToWorldPoint(curScreenPos + new Vector3(0, 0, z));
-		}
-	}
-	private bool isClickedOn
-	{
-		get
-		{
-			Ray ray = camera.ScreenPointToRay(curScreenPos);
-			RaycastHit hit;
-			if(Physics.Raycast(ray, out hit))
-			{
-				return hit.transform == transform;
-			}
-			return false;
-		}
-	}
-	private void Awake() 
-	{
-		camera = Camera.main;
+        clickAction.performed += OnClick;
+        clickAction.canceled += OnRelease;
+    }
 
-        if (camera == null)
+    private void OnDisable()
+    {
+        clickAction.Disable();
+        pointerPosition.Disable();
+
+        clickAction.performed -= OnClick;
+        clickAction.canceled -= OnRelease;
+    }
+
+    private void OnClick(InputAction.CallbackContext context)
+    {
+        if (!DragDropManager.DragDropEnabled)
         {
-            Debug.LogError("no main camera; does a camera have 'MainCamera' tag?");
+            Debug.Log("Drag Mode not enabled.");
             return;
         }
 
-        screenPos.Enable();
-		press.Enable();
-		screenPos.performed += context => { curScreenPos = context.ReadValue<Vector2>(); };
-		press.performed += _ => { Debug.Log("Pressed. isClickedOn: " + isClickedOn); if (isClickedOn) StartCoroutine(Drag()); };
-		press.canceled += _ => { isDragging = false; };
+        Vector2 mousePosition = pointerPosition.ReadValue<Vector2>();
+        Ray ray = Camera.main.ScreenPointToRay(mousePosition);
 
-	}
+        if (Physics.Raycast(ray, out RaycastHit hit))
+        {
+            Debug.Log("Ray hit: " + hit.transform.name);
 
-	private IEnumerator Drag()
-	{
-		isDragging = true;
-		Vector3 offset = transform.position - WorldPos;
-		// grab
-		GetComponent<Rigidbody>().useGravity = false;
-		while(isDragging)
-		{
-			// dragging
-			transform.position = WorldPos + offset;
-			yield return null;
-		}
-		// drop
-		GetComponent<Rigidbody>().useGravity = true;
-	}
+            if (hit.transform.CompareTag(requiredTag))
+            {
+                selectedObject = hit.transform;
+                distance = Vector3.Distance(Camera.main.transform.position, selectedObject.position);
+                Debug.Log("Object selected for dragging: " + selectedObject.name);
+            }
+            else
+            {
+                Debug.Log("Object hit does not have required tag: " + requiredTag);
+            }
+        }
+        else
+        {
+            Debug.Log("Raycast did not hit any object.");
+        }
+    }
+
+    private void OnRelease(InputAction.CallbackContext context)
+    {
+        if (selectedObject != null)
+        {
+            Debug.Log("Released object: " + selectedObject.name);
+        }
+        selectedObject = null;
+    }
+
+    private void Update()
+    {
+        if (!DragDropManager.DragDropEnabled || selectedObject == null)
+            return;
+
+        Vector2 mousePosition = pointerPosition.ReadValue<Vector2>();
+        Ray ray = Camera.main.ScreenPointToRay(mousePosition);
+        Vector3 point = ray.GetPoint(distance);
+        selectedObject.position = point;
+    }
 }
